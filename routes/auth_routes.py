@@ -19,7 +19,7 @@ def _handle_service_error(error: Exception) -> None:
     if isinstance(error, NotFoundError):
         raise HTTPException(status_code=404, detail=str(error))
     if isinstance(error, StorageUnavailableError):
-        raise HTTPException(status_code=503, detail="Database unavailable")
+        raise HTTPException(status_code=503, detail=str(error) or "Service unavailable")
     raise error
 
 

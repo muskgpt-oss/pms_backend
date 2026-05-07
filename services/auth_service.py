@@ -128,7 +128,12 @@ async def request_signup_verification(email: str, password: str, username: str, 
 
         delivery_mode = os.getenv("OTP_DELIVERY_MODE", "smtp").strip().lower()
         if delivery_mode == "smtp":
-            send_email_verification_otp(to_email=normalized_email, otp=otp, expiry_minutes=expiry_minutes)
+            try:
+                send_email_verification_otp(to_email=normalized_email, otp=otp, expiry_minutes=expiry_minutes)
+            except StorageUnavailableError as error:
+                raise ValidationError(
+                    "Unable to send verification email right now. Configure SMTP_* variables or set OTP_DELIVERY_MODE=dev-inline."
+                ) from error
         elif delivery_mode != "dev-inline":
             raise ValidationError("Invalid OTP_DELIVERY_MODE. Use 'smtp' or 'dev-inline'.")
 
