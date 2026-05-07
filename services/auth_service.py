@@ -151,7 +151,9 @@ async def request_signup_verification(email: str, password: str, username: str, 
     except (ValidationError, ConflictError):
         raise
     except PyMongoError as error:
-        raise StorageUnavailableError("Storage is unavailable") from error
+        raise StorageUnavailableError(
+            "Database unavailable. Verify MONGODB_URI/MONGODB_DB and that your MongoDB cluster allows Render network access."
+        ) from error
 
 
 async def verify_signup_otp(email: str, otp: str) -> dict:
@@ -214,7 +216,9 @@ async def verify_signup_otp(email: str, otp: str) -> dict:
     except (ValidationError, ConflictError):
         raise
     except PyMongoError as error:
-        raise StorageUnavailableError("Storage is unavailable") from error
+        raise StorageUnavailableError(
+            "Database unavailable. Verify MONGODB_URI/MONGODB_DB and that your MongoDB cluster allows Render network access."
+        ) from error
 
 
 async def sign_up(email: str, password: str, username: str, invite_token: str | None = None, otp: str | None = None) -> dict:
