@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -40,6 +41,10 @@ async def startup_event() -> None:
     db_ok, _ = await ping_database()
     if db_ok:
         await initialize_indexes()
+    else:
+        # Log database connectivity problems so Render logs show the exact error
+        db_ok, db_message = await ping_database()
+        logging.warning("Database ping failed during startup: %s", db_message)
 
 
 app.include_router(project_router)
